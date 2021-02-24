@@ -51,10 +51,11 @@ Napi::Value ReadShareMemory(const Napi::CallbackInfo &info)
         return Napi::Boolean::New(env, false);
     if (!info[0].IsString())
         return Napi::Boolean::New(env, false);
-    if (!info[1].IsArrayBuffer())
+    if (!info[1].IsBuffer())
         return Napi::Boolean::New(env, false);
     auto name = info[0].As<Napi::String>().Utf8Value();
-    auto buff = info[1].As<Napi::ArrayBuffer>();
+    auto buff = info[1].As<Napi::Buffer<unsigned char>>();
+
     auto bufflen = buff.ByteLength();
     HANDLE mapping = OpenFileMappingA(FILE_MAP_READ, false, name.c_str());
     if (mapping)
@@ -80,10 +81,10 @@ Napi::Value WriteShareMemory(const Napi::CallbackInfo &info)
         return Napi::Boolean::New(env, false);
     if (!info[0].IsString())
         return Napi::Boolean::New(env, false);
-    if (!info[1].IsArrayBuffer())
+    if (!info[1].IsBuffer())
         return Napi::Boolean::New(env, false);
     auto name = info[0].As<Napi::String>().Utf8Value();
-    auto buff = info[1].As<Napi::ArrayBuffer>();
+    auto buff = info[1].As<Napi::Buffer<unsigned char>>();
     auto bufflen = buff.ByteLength();
     HANDLE mapping = OpenFileMappingA(FILE_MAP_WRITE, false, name.c_str());
     if (mapping)
