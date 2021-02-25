@@ -1,6 +1,6 @@
 {
   "name": "share-memory-win",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "a share memory module between diffrent process on windows. runtime nodejs/electron.",
   "main": "index.js",
   "scripts": {

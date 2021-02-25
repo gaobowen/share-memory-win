@@ -145,16 +145,29 @@ Napi::Value WriteShareMemoryFast(const Napi::CallbackInfo &info)
         return Napi::Boolean::New(env, false);
     if (!info[0].IsString())
         return Napi::Boolean::New(env, false);
-    if (!info[1].IsBuffer())
+    if (!info[1].IsBuffer() && !info[1].IsArrayBuffer())
         return Napi::Boolean::New(env, false);
     auto name = info[0].As<Napi::String>().Utf8Value();
-    auto buff = info[1].As<Napi::Buffer<unsigned char>>();
-    auto bufflen = buff.ByteLength();
+    
+    void*_data = nullptr;
+    size_t bufflen = 0;
+    if (info[1].IsBuffer())
+    {
+        auto buff = info[1].As<Napi::Buffer<unsigned char>>();
+        _data = buff.Data();
+        bufflen = buff.ByteLength();
+    }
+    else
+    {
+        auto arrbuff = info[1].As<Napi::ArrayBuffer>();
+        _data = arrbuff.Data();
+        bufflen = arrbuff.ByteLength();
+    }
 
     auto it = _sharedCachedData.find(name);
     if (it != _sharedCachedData.end())
     {
-        memcpy(_sharedCachedData[name].ptr, buff.Data(), bufflen);
+        memcpy(_sharedCachedData[name].ptr, _data, bufflen);
         return Napi::Boolean::New(env, true);
     }
     else
@@ -167,7 +180,7 @@ Napi::Value WriteShareMemoryFast(const Napi::CallbackInfo &info)
             {
                 _sharedCachedData[name].openHandle = mapping;
                 _sharedCachedData[name].ptr = ptr;
-                memcpy(ptr, buff.Data(), bufflen);
+                memcpy(ptr, _data, bufflen);
                 return Napi::Boolean::New(env, true);
             }
         }
