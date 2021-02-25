@@ -13,15 +13,28 @@ writebuff[3] = 3;
 writebuff[4] = 1;
 
 ret = smemory.WriteShareMemory('my-addon-test-memory', writebuff);
-console.log('WriteShareMemory=>', ret);
+console.log('WriteShareMemory =>', ret);
 
 let readbuff = Buffer.alloc(10);
 ret = smemory.ReadShareMemory('my-addon-test-memory', readbuff);
-console.log('ReadShareMemory=> ', ret, readbuff);
+console.log('ReadShareMemory => ', ret, readbuff);
+
+writebuff[0] = 1;
+writebuff[1] = 3;
+writebuff[2] = 5;
+writebuff[3] = 7;
+writebuff[4] = 9;
+ret = smemory.WriteShareMemoryFast('my-addon-test-memory', writebuff);
+console.log('WriteShareMemoryFast =>', ret);
+
+readbuff = Buffer.alloc(10);
+ret = smemory.ReadShareMemoryFast('my-addon-test-memory', readbuff);
+console.log('ReadShareMemoryFast => ', ret, readbuff);
+
 
 ret = smemory.DeleteShareMemory('my-addon-test-memory');
-console.log('DeleteShareMemory=> ', ret);
+console.log('DeleteShareMemory => ', ret);
 
 readbuff = Buffer.alloc(10);
 ret = smemory.ReadShareMemory('my-addon-test-memory', readbuff);
-console.log('ReadShareMemory=> ', ret, readbuff);
+console.log('ReadShareMemory => ', ret, readbuff);
